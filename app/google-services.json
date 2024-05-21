@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "846726288441",
+    "firebase_url": "https://ex192---firebase-db-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "ex192---firebase-db",
+    "storage_bucket": "ex192---firebase-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846726288441:android:0523335631b5b2ff31e9e8",
+        "android_client_info": {
+          "package_name": "com.yanir.ex192_firebasedb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHW9SwAL9QFEl1Q3Cythzm9tIR8bI83r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
