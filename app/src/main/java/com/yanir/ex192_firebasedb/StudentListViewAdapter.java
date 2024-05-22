@@ -41,7 +41,7 @@ public class StudentListViewAdapter extends ArrayAdapter<Student> {
 
         name.setText(students.get(position).getFirstName() + " " + students.get(position).getLastName());
         // convert the grade to string 1 - A , 2 - B , 3 - C , 4 - D , 5 - F and so on until 12
-        grade.setText((char) (students.get(position).getGrade() + 64) + " " + students.get(position).getClassNumber());
+        grade.setText((char) (students.get(position).getGrade() + 64) + " - " + students.get(position).getClassNumber());
         // check if the student can vaccinate
         if (students.get(position).isCanVaccinate()) {
             canVaccinate.setImageResource(R.drawable.candovac);

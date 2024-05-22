@@ -1,6 +1,7 @@
 package com.yanir.ex192_firebasedb;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,8 +32,10 @@ public class AddStudent extends AppCompatActivity {
     Switch canVaccinateSwitch, isActiveSwitch;
     CheckBox firstVaccineCheckBox, secondVaccineCheckBox;
     Button saveButton, addFirstVaccineButton, addSecondVaccineButton;
-    Student student;
+    Student student, pastStudent;
     AlertDialog.Builder builder;
+    Vaccine firstVaccine, secondVaccine;
+    boolean editMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +73,47 @@ public class AddStudent extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             student = (Student) getIntent().getExtras().get("student");
             setStudent(student);
+            editMode = true;
+            pastStudent = new Student(student);
         }else {
             student = new Student();
         }
+        firstVaccine = student.getFirstVaccine();
+        secondVaccine = student.getSecondVaccine();
     }
 
     public void addStudent(View view) {
         // get the values from the views
         String firstName = firstNameEditText.getText().toString();
         String lastName = lastNameEditText.getText().toString();
+        if (IDEditText.getText().toString().equals("") || firstName.equals("") || lastName.equals("")) {
+            Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int ID = Integer.parseInt(IDEditText.getText().toString());
         int grade = Integer.parseInt(gradeSpinner.getSelectedItem().toString());
         int classNumber = Integer.parseInt(classSpinner.getSelectedItem().toString());
+
+
         boolean canVaccinate = canVaccinateSwitch.isChecked();
-        Vaccine firstVaccine = student.getFirstVaccine();
-        Vaccine secondVaccine = student.getSecondVaccine();
+        if (!firstVaccineCheckBox.isChecked()){
+            firstVaccine = new Vaccine();
+        }else {
+            if (firstVaccine.getDate().equals("") || firstVaccine.getLocation().equals("")){
+                Toast.makeText(this, "Please fill all the fields - first vaccine", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            firstVaccine = student.getFirstVaccine();
+        }
+        if (!secondVaccineCheckBox.isChecked()){
+            secondVaccine = new Vaccine();
+        }else {
+            if (secondVaccine.getDate().equals("") || secondVaccine.getLocation().equals("")){
+                Toast.makeText(this, "Please fill all the fields - second vaccine", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            secondVaccine = student.getSecondVaccine();
+        }
 
 
         // check if the ID is valid
@@ -96,12 +125,22 @@ public class AddStudent extends AppCompatActivity {
         // set the values to the student
         student.setStudent(firstName, lastName, grade, classNumber, ID, canVaccinate , firstVaccine, secondVaccine);
 
+        if(editMode && pastStudent.equals(student)){
+            Toast.makeText(this, "No changes were made", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (editMode){
+            FireDB.getInstance().deleteStudent(pastStudent);
+        }
+
         // add the student to the database
         if (FireDB.getInstance().addStudent(student)) {
-            Toast.makeText(this, "Student added", Toast.LENGTH_SHORT).show();
+            // if edit mode tost student edited else toast student added
+            Toast.makeText(this, "Student " + (editMode ? "edited" : "added"), Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this, "Failed to add student", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed " + (editMode ? "editing" : "adding") + " student", Toast.LENGTH_SHORT).show();
+            FireDB.getInstance().addStudent(pastStudent);
         }
     }
 
@@ -112,8 +151,16 @@ public class AddStudent extends AppCompatActivity {
         gradeSpinner.setSelection(student.getGrade() - 1);
         classSpinner.setSelection(student.getClassNumber() - 1);
         canVaccinateSwitch.setChecked(student.isCanVaccinate());
-        firstVaccineCheckBox.setChecked(student.getFirstVaccine() != null);
-        secondVaccineCheckBox.setChecked(student.getSecondVaccine() != null);
+        firstVaccineCheckBox.setChecked(!student.getFirstVaccine().isNull());
+        secondVaccineCheckBox.setChecked(!student.getSecondVaccine().isNull());
+        if (firstVaccineCheckBox.isChecked()){
+            addFirstVaccineButton.setBackgroundColor(Color.GREEN);
+            addFirstVaccineButton.setText("Done!");
+        }
+        if (secondVaccineCheckBox.isChecked()){
+            addSecondVaccineButton.setBackgroundColor(Color.GREEN);
+            addSecondVaccineButton.setText("Done!");
+        }
     }
 
 
@@ -199,9 +246,17 @@ public class AddStudent extends AppCompatActivity {
             // get the values from the views
             String date = dateEditText.getText().toString();
             String location = locationEditText.getText().toString();
+            if (date.equals("") || location.equals("")){
+                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
             // set the values to the student
             student.getFirstVaccine().setDate(date);
             student.getFirstVaccine().setLocation(location);
+
+            // set button color to green and text to "Done!"
+            addFirstVaccineButton.setBackgroundColor(Color.GREEN);
+            addFirstVaccineButton.setText("Done!");
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();
@@ -230,9 +285,15 @@ public class AddStudent extends AppCompatActivity {
             // get the values from the views
             String date = dateEditText.getText().toString();
             String location = locationEditText.getText().toString();
+            if (date.equals("") || location.equals("")){
+                Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
             // set the values to the student
             student.getSecondVaccine().setDate(date);
             student.getSecondVaccine().setLocation(location);
+            addSecondVaccineButton.setBackgroundColor(Color.GREEN);
+            addSecondVaccineButton.setText("Done!");
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             dialog.cancel();

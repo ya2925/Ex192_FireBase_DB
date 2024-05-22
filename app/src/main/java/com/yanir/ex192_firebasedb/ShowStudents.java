@@ -1,7 +1,11 @@
 package com.yanir.ex192_firebasedb;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,10 +21,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ShowStudents extends AppCompatActivity {
+public class ShowStudents extends AppCompatActivity implements View.OnCreateContextMenuListener {
 
     ArrayList<Student> students;
     ListView listView;
+    StudentListViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +38,22 @@ public class ShowStudents extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.studentsLV);
 
         // create an adapter for the listView
-        StudentListViewAdapter adapter = new StudentListViewAdapter(this, students);
+        adapter = new StudentListViewAdapter(this, students);
 
         // set the adapter to the listView
         listView.setAdapter(adapter);
 
+        // register the students listView for the context menu
+        registerForContextMenu(listView);
+
         // show the students
+        showStudents();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         showStudents();
     }
 
@@ -48,7 +63,7 @@ public class ShowStudents extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // clear the students arrayList
-                students = new ArrayList<>();
+                students.clear();
                 // get all the grades
                 for (DataSnapshot grade : snapshot.getChildren()) {
                     // get all the classes
@@ -60,10 +75,7 @@ public class ShowStudents extends AppCompatActivity {
                         }
                     }
                 }
-                // create an adapter for the listView
-                StudentListViewAdapter adapter = new StudentListViewAdapter(ShowStudents.this, students);
-                // set the adapter to the listView
-                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -72,6 +84,39 @@ public class ShowStudents extends AppCompatActivity {
                 Log.e("ShowStudents", error.getMessage());
             }
         });
+    }
 
+    public void onCreateContextMenu(android.view.ContextMenu menu, android.view.View v, android.view.ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        // edit and delete the student
+        menu.add("Edit student");
+        menu.add("Delete student");
+    }
+
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
+
+        // get the selected student
+        Student student = students.get(position);
+
+        // check if the user selected the edit student option
+        if (item.getTitle().equals("Edit student")) {
+            // open the edit student activity
+            Intent si = new android.content.Intent(this, AddStudent.class);
+            // put the student object in the intent to send it to the edit student activity
+            si.putExtra("student", student);
+            startActivity(si);
+        }
+        // check if the user selected the delete student option
+        else if (item.getTitle().equals("Delete student")) {
+            // delete the student from the database
+            FireDB.getInstance().deleteStudent(student);
+            // show the students
+            showStudents();
+        }
+
+        return true;
     }
 }
