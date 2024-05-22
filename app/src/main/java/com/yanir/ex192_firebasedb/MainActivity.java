@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToShowStudents(View view) {
+        Intent intent = new Intent(this, ShowStudents.class);
+        startActivity(intent);
     }
 
     public void printStudents(View view) {
