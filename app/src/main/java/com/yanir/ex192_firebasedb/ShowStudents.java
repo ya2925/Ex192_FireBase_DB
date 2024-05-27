@@ -3,6 +3,7 @@ package com.yanir.ex192_firebasedb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ public class ShowStudents extends AppCompatActivity implements View.OnCreateCont
     ArrayList<Student> students;
     ListView listView;
     StudentListViewAdapter adapter;
+    Intent in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class ShowStudents extends AppCompatActivity implements View.OnCreateCont
 
         // show the students
         showStudents();
+
+        in = getIntent();
     }
 
     @Override
@@ -118,5 +122,37 @@ public class ShowStudents extends AppCompatActivity implements View.OnCreateCont
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        if (item.getTitle().toString().equals("Home")){
+            Intent in = new Intent(this, MainActivity.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("add student")){
+            in.setClass(this, AddStudent.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("show data")){
+            in.setClass(this, ShowStudents.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("filter data")){
+            in.setClass(this, Sorting.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("credits")){
+            in.setClass(this, credits.class);
+            startActivity(in);
+        }
+        in.setClass(this, MainActivity.class);
+        return super.onOptionsItemSelected(item);
     }
 }

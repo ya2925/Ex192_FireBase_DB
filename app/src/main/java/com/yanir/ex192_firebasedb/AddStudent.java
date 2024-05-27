@@ -1,8 +1,11 @@
 package com.yanir.ex192_firebasedb;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -36,6 +40,7 @@ public class AddStudent extends AppCompatActivity {
     AlertDialog.Builder builder;
     Vaccine firstVaccine, secondVaccine;
     boolean editMode = false;
+    Intent in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,8 @@ public class AddStudent extends AppCompatActivity {
         }
         firstVaccine = student.getFirstVaccine();
         secondVaccine = student.getSecondVaccine();
+
+        in = getIntent();
     }
 
     public void addStudent(View view) {
@@ -166,9 +173,6 @@ public class AddStudent extends AppCompatActivity {
 
 
     boolean isValidID(int ID) {
-        if (true){
-            return true;
-        }
         // convert the ID to string
         String IDString = ID + "";
         int idSum = 0;
@@ -323,5 +327,37 @@ public class AddStudent extends AppCompatActivity {
         }, current.getYear(), current.getMonth(), current.getDay());
 
         datePickerDialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        if (item.getTitle().toString().equals("Home")){
+            Intent in = new Intent(this, MainActivity.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("add student")){
+            in.setClass(this, AddStudent.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("show data")){
+            in.setClass(this, ShowStudents.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("filter data")){
+            in.setClass(this, Sorting.class);
+            startActivity(in);
+        }
+        else if (item.getTitle().toString().equals("credits")){
+            in.setClass(this, credits.class);
+            startActivity(in);
+        }
+        in.setClass(this, MainActivity.class);
+        return super.onOptionsItemSelected(item);
     }
 }

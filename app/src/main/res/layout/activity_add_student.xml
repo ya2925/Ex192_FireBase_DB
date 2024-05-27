@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="addFirstVaccine"
-                android:text="Button"
+                android:text="Add Info"
                 android:visibility="invisible" />
 
         </LinearLayout>
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="addSecondVaccine"
-                android:text="Button"
+                android:text="Add Info"
                 android:visibility="invisible" />
 
         </LinearLayout>

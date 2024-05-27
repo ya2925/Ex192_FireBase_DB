@@ -51,6 +51,16 @@ public class FireDB {
         return redGrades;
     }
 
+    public DatabaseReference getStudents(int grade) {
+        DatabaseReference redGrades = database.getReference("grades");
+        return redGrades.child(grade + "");
+    }
+
+    public DatabaseReference getStudents(int grade, int classNumber) {
+        DatabaseReference redGrades = database.getReference("grades");
+        return redGrades.child(grade + "").child(classNumber + "");
+    }
+
     public void deleteStudent(Student student) {
         DatabaseReference redGrades = database.getReference("grades");
         redGrades.child(student.getGrade() + "").child(student.getClassNumber() + "").child(student.getID() + "").removeValue();

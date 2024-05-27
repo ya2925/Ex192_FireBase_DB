@@ -91,7 +91,7 @@
         android:layout_marginTop="8dp"
         android:background="#0288D1"
         android:onClick="goToShowStudents"
-        android:text="Show Vaccinated"
+        android:text="Show Students"
         android:textColor="#ffffff" />
 
     <Button
@@ -99,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="#FFC107"
-        android:onClick="goToFilter"
+        android:onClick="goToSortStudents"
         android:text="Filter Vaccinations"
         android:textColor="#ffffff" />
 

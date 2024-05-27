@@ -125,4 +125,8 @@ public class Student implements Serializable {
         return this.firstName.equals(student.firstName) && this.lastName.equals(student.lastName) && this.grade == student.grade && this.classNumber == student.classNumber && this.ID == student.ID && this.canVaccinate == student.canVaccinate && this.firstVaccine.equals(student.firstVaccine) && this.secondVaccine.equals(student.secondVaccine);
     }
 
+    public boolean isImmune() {
+        return !this.firstVaccine.isNull() && !this.secondVaccine.isNull();
+    }
+
 }
